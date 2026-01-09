@@ -147,7 +147,7 @@ clas_file = "Data/Forest_classification.tif"
 classification.add_raster(
             clas_file,
             layer_name="Forest classification",
-            palette=["#00000000", "#006400", "#90ee90"],
+            palette=["#006400", "#90ee90"],
             nodata=0  
 )
 legend_dict = {
@@ -167,6 +167,7 @@ st.page_link(
     "pages/5_Total_carbon_stored.py",
     label="-> Carbon prediction"
 )
+
 
 
 
