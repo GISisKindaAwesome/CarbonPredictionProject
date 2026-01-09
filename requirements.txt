@@ -3,3 +3,4 @@ leafmap
 folium
 streamlit-folium
 xarray
+rasterio
