@@ -28,7 +28,7 @@ study_area = leafmap.Map(
     scale_control=False    
 )
 
-study_area.add_basemap("Esri.WorldImagery")
+study_area.add_basemap("SATELLITE")
 
 night_style = {
     "stroke": True,
@@ -72,4 +72,5 @@ st.subheader("Click below to view statistics")
 st.page_link(
     "pages/2_Statistics.py",
     label="-> Project statistics"
+
 )
