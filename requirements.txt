@@ -5,8 +5,3 @@ streamlit-folium
 xarray
 rasterio
 localtileserver
-psutil
-numpy
-matplotlib
-Pillow
-gdal
