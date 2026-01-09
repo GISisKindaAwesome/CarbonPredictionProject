@@ -2,3 +2,4 @@ streamlit
 leafmap
 folium
 streamlit-folium
+import xarray as xr
