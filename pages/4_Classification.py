@@ -158,36 +158,7 @@ classification.add_legend(
     title="Forest types",
     legend_dict=legend_dict
 )
-import rasterio
-import numpy as np
-from PIL import Image
-import tempfile
 
-# read classification raster
-with rasterio.open(clas_file) as src:
-    band = src.read(1)
-    bounds = [[src.bounds.bottom, src.bounds.left], [src.bounds.top, src.bounds.right]]
-
-# create RGBA image (transparent for 0)
-h, w = band.shape
-img = np.zeros((h, w, 4), dtype=np.uint8)
-
-# mapping: change colors if you like
-cmap = {
-    0: (0, 0, 0, 0),         # background -> transparent
-    1: (0, 100, 0, 255),     # coniferous -> dark green
-    2: (144, 238, 144, 255)  # broadleaf -> light green
-}
-
-for val, color in cmap.items():
-    img[band == val] = color
-
-# save to temp png
-tmp = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
-Image.fromarray(img).save(tmp.name)
-
-# add overlay to the map
-classification.add_image(tmp.name, bounds=bounds, name="Forest PNG overlay")
 classification.to_streamlit()
 
 st.space(size="small")
@@ -197,6 +168,7 @@ st.page_link(
     "pages/5_Total_carbon_stored.py",
     label="-> Carbon prediction"
 )
+
 
 
 
