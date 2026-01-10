@@ -7,3 +7,5 @@ rasterio
 localtileserver
 psutil
 Pillow
+numpy
+rio-cogeo
