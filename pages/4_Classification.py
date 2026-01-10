@@ -131,25 +131,202 @@ con_df = con_df.rename(index={"Actual 1": "Actual Coniferous forest", "Actual 2"
 st.dataframe(con_df)
 
 st.space(size="small")
+         
+# Insert or replace the mapping / raster-loading section of your pages/4_Classification.py with this block.
+# This code will try to create a COG at runtime using local gdal_translate (if available),
+# or rio cogeo (if available). If creation or loading fails, it falls back to a PNG overlay.
+#
+# IMPORTANT: Creating a COG with gdal_translate requires the GDAL command-line tools to be
+# installed on the server (conda install -c conda-forge gdal or apt/brew install gdal).
+# rio-cogeo is an alternative (conda install -c conda-forge rio-cogeo).
+#
+# Place this block where you previously showed the classification map; it expects your
+# original GeoTIFF at Data/Forest_classification.tif and will try to create
+# Data/Forest_classification_cog.tif next to it.
+
+import os
+import subprocess
+import shutil
+import streamlit as st
+import numpy as np
+from PIL import Image
+import tempfile
+
+import leafmap.foliumap as leafmap
+
+def create_cog_with_gdal(src, dst):
+    """Run gdal_translate to create a COG. Returns (success, message)."""
+    gdal_exec = shutil.which("gdal_translate")
+    if not gdal_exec:
+        return False, "gdal_translate not found in PATH"
+    cmd = [
+        gdal_exec,
+        "-of", "COG",
+        "-co", "COMPRESS=DEFLATE",
+        "-co", "BLOCKSIZE=512",
+        "-co", "TILED=YES",
+        "-a_nodata", "0",
+        "-ot", "Byte",
+        src,
+        dst
+    ]
+    try:
+        proc = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        return True, proc.stdout.decode() or "gdal_translate succeeded"
+    except subprocess.CalledProcessError as e:
+        err = e.stderr.decode() if e.stderr else str(e)
+        return False, f"gdal_translate failed: {err}"
+
+
+def create_cog_with_rio_cli(src, dst):
+    """Try 'rio cogeo create' CLI if available on PATH."""
+    rio_exec = shutil.which("rio")
+    if not rio_exec:
+        return False, "rio CLI not found in PATH"
+    cmd = [rio_exec, "cogeo", "create", src, dst, "--nodata", "0"]
+    try:
+        proc = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        return True, proc.stdout.decode() or "rio cogeo create succeeded"
+    except subprocess.CalledProcessError as e:
+        err = e.stderr.decode() if e.stderr else str(e)
+        return False, f"rio cogeo create failed: {err}"
+
+
+def create_cog_fallback_python(src, dst):
+    """
+    Try to create a COG using rio-cogeo Python API if installed.
+    This is a best-effort attempt; if rio_cogeo APIs are not available this will raise.
+    """
+    try:
+        from rasterio import Env
+        from rio_cogeo.cogeo import cog_translate
+        from rio_cogeo.profiles import cog_profiles
+        profile = cog_profiles.get("deflate")
+        # cog_translate signature accepts src_path, dst_path, config, ...)
+        cog_translate(src, dst, profile)
+        return True, "rio_cogeo.cog_translate succeeded"
+    except Exception as e:
+        return False, f"rio_cogeo python method failed: {e}"
+
+
+def ensure_cog(src_tif, dst_cog):
+    """
+    Ensure a COG exists at dst_cog. Try several methods to create it.
+    Returns (True, message) on success.
+    """
+    if os.path.exists(dst_cog):
+        return True, "COG already exists"
+
+    if not os.path.exists(src_tif):
+        return False, f"Source TIFF not found: {src_tif}"
+
+    # 1) Try gdal_translate CLI
+    ok, msg = create_cog_with_gdal(src_tif, dst_cog)
+    if ok:
+        return True, "COG created with gdal_translate: " + msg
+    st.info("gdal_translate not available or failed — trying rio cogeo CLI if present.")
+
+    # 2) Try rio cogeo CLI
+    ok, msg = create_cog_with_rio_cli(src_tif, dst_cog)
+    if ok:
+        return True, "COG created with rio cogeo CLI: " + msg
+    st.info("rio cogeo CLI not available or failed — trying rio_cogeo Python API if installed.")
+
+    # 3) Try Python rio-cogeo API (best-effort)
+    ok, msg = create_cog_fallback_python(src_tif, dst_cog)
+    if ok:
+        return True, "COG created with rio_cogeo Python API: " + msg
+
+    # 4) All attempts failed
+    return False, ("Could not create COG automatically. "
+                   "Install GDAL (gdal_translate) or rio-cogeo, or create the COG locally and "
+                   "place it at: " + dst_cog)
+
+
+def add_png_overlay_from_tif(map_obj, src_tif, layer_name="Forest PNG overlay"):
+    """Generate a colorized PNG from classification TIFF and add it as an image overlay."""
+    try:
+        import rasterio
+    except Exception as e:
+        st.error(f"rasterio is required for PNG fallback but is not available: {e}")
+        return False
+
+    with rasterio.open(src_tif) as src:
+        band = src.read(1)
+        bounds = [[src.bounds.bottom, src.bounds.left], [src.bounds.top, src.bounds.right]]
+
+    # color mapping: 0 -> transparent, 1 -> dark green, 2 -> light green
+    cmap = {
+        0: (0, 0, 0, 0),
+        1: (0, 100, 0, 255),
+        2: (144, 238, 144, 255)
+    }
+
+    h, w = band.shape
+    img = np.zeros((h, w, 4), dtype=np.uint8)
+    for val, color in cmap.items():
+        img[band == val] = color
+
+    tmp = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
+    Image.fromarray(img).save(tmp.name)
+
+    map_obj.add_image(tmp.name, bounds=bounds, name=layer_name)
+    return True
+
+
+# -------------------------
+# Mapping section starts here
+# -------------------------
 
 st.subheader("Final classification map")
 st.write("The random forest classification leads to this map as a final result:")
+
 classification = leafmap.Map(
-    zoom_control=True, 
-    attribution_control=False,   
-    draw_control=False,          
-    measure_control=False,       
-    locate_control=False,        
-    scale_control=False  
+    zoom_control=True,
+    attribution_control=False,
+    draw_control=False,
+    measure_control=False,
+    locate_control=False,
+    scale_control=False
 )
-classification.add_basemap("SATELLITE")
-clas_file = "Data/Forest_classification.tif"
-classification.add_raster(
-            clas_file,
+
+# Use the basemap you prefer (you mentioned switching fixed your earlier issue)
+classification.add_basemap("OpenStreetMap")
+
+# Paths
+src_tif = os.path.join(os.getcwd(), "Data", "Forest_classification.tif")
+dst_cog = os.path.join(os.getcwd(), "Data", "Forest_classification_cog.tif")
+
+# Try to ensure a COG exists (attempt to create on the server)
+with st.spinner("Ensuring COG exists (this may take a few seconds)..."):
+    cog_ok, cog_msg = ensure_cog(src_tif, dst_cog)
+
+if cog_ok:
+    st.success(cog_msg)
+    # Try to add COG to the map
+    try:
+        classification.add_raster(
+            dst_cog,
             layer_name="Forest classification",
-            palette=["#00000000", "#006400", "#90ee90"],
-            nodata=0  
-)
+            palette=["#006400", "#90ee90"],
+            nodata=0,
+            opacity=0.8
+        )
+        st.info("Loaded raster from COG.")
+    except Exception as e:
+        st.warning(f"Adding COG failed: {e}. Falling back to PNG overlay.")
+        added = add_png_overlay_from_tif(classification, src_tif)
+        if not added:
+            st.error("PNG fallback also failed; cannot display classification.")
+else:
+    # COG could not be created — show message and try PNG fallback
+    st.warning(cog_msg)
+    st.info("Falling back to PNG overlay generated on-the-fly.")
+    added = add_png_overlay_from_tif(classification, src_tif)
+    if not added:
+        st.error("PNG fallback failed; please create a COG locally and add it to Data/Forest_classification_cog.tif")
+
+# Add legend and show map
 legend_dict = {
     "Coniferous forest": "#006400",
     "Broadleaf forest": "#90ee90"
@@ -168,6 +345,7 @@ st.page_link(
     "pages/5_Total_carbon_stored.py",
     label="-> Carbon prediction"
 )
+
 
 
 
