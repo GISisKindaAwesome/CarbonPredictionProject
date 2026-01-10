@@ -9,4 +9,3 @@ psutil
 Pillow
 numpy
 rio-cogeo
-gdal
