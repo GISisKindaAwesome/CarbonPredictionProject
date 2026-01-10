@@ -308,9 +308,8 @@ if cog_ok:
         classification.add_raster(
             dst_cog,
             layer_name="Forest classification",
-            palette=["#006400", "#90ee90"],
+            palette=["#00000000", "#006400", "#90ee90"],
             nodata=0,
-            opacity=0.8
         )
         st.info("Loaded raster from COG.")
     except Exception as e:
@@ -345,6 +344,7 @@ st.page_link(
     "pages/5_Total_carbon_stored.py",
     label="-> Carbon prediction"
 )
+
 
 
 
