@@ -195,7 +195,7 @@ left, bottom, right, top = extent[0], extent[1], extent[2], extent[3]
 ax.imshow(
     masked,
     cmap=cmap,
-    vmin=0,
+    vmin=1,
     vmax=2,
     extent=(left, right, bottom, top),
     origin="upper",
@@ -234,6 +234,7 @@ st.page_link(
     "pages/5_Total_carbon_stored.py",
     label="-> Carbon prediction"
 )
+
 
 
 
