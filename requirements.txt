@@ -11,3 +11,4 @@ numpy
 rio-cogeo
 rasterio
 pydeck
+matplotlib
