@@ -175,7 +175,7 @@ clas_path = "Data/Forest_classification.tif"
 with rasterio.open(clas_path) as src:
     band = src.read(1)
          
-samos_path = "Data/SamosIsland/SamosIsland/SamosGreekGrid.shp"
+samos_path = "Data/SamosIsland/SamosGreekGrid.shp"
 gdf = gpd.read_file(samos_path)
 gdf_wgs84 = gdf.to_crs(epsg=4326)
 
@@ -206,6 +206,7 @@ st.page_link(
     "pages/5_Total_carbon_stored.py",
     label="-> Carbon prediction"
 )
+
 
 
 
