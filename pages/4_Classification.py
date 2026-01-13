@@ -4,6 +4,7 @@ import rasterio
 import leafmap.foliumap as leafmap
 import pandas as pd
 import numpy as np
+import geopandas as gpd
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap, BoundaryNorm
 from matplotlib.patches import Patch
@@ -196,6 +197,7 @@ st.page_link(
     "pages/5_Total_carbon_stored.py",
     label="-> Carbon prediction"
 )
+
 
 
 
