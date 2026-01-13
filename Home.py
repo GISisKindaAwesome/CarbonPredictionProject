@@ -6,7 +6,7 @@ st.write("Welcome to the Streamlit which will take you through the project I hav
 st.space(size="small")
 
 st.header("Who am I")
-st.write("I am Thijme Jonckers, 20 years old and from the Netherlands. Currently I'm in my last year of my Bsc Internation Forest and Nature Management specialising in Tropical Forestry at Van Hall Larenstein Univeristy of Applied Sciences.")
+st.write("I am Thijme Jonckers, 20 years old and from the Netherlands. Currently I'm in my last year of my Bsc International Forest and Nature Management specialising in Tropical Forestry at Van Hall Larenstein Univeristy of Applied Sciences.")
 st.write("For my final year at university it is required to complete a 5 month internship. I got the oppurtunity to follow this internship at Archipelagos Institute of Marine Conservation in the GIS team. This was perfect since during my study I discovered my interest for GIS and data analysis and using this to solve real-world environmental problems. This perfectly aligns with the oppurtunity I got at Archipelagos.")
 
 st.space(size="small")
@@ -47,4 +47,5 @@ st.page_link(
 st.space(size="small")
 
 st.subheader("Disclaimer")
+
 st.write("The results of this project are a prediction and not a precise conclusion on the total amount of carbon stored. It is meant to give more an idea of the amount then a final conclusion.")
