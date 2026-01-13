@@ -1,15 +1,9 @@
 streamlit
 leafmap
 folium
-streamlit-folium
-xarray
 rasterio
 localtileserver
 psutil
-Pillow
 numpy
-rio-cogeo
-rasterio
-pydeck
 matplotlib
 geopandas
