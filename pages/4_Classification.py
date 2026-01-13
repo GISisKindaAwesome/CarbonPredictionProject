@@ -134,6 +134,8 @@ st.space(size="small")
          
 st.subheader("Final classification map")
 st.write("The random forest classification leads to this map as a final result:")
+
+#---Interactive map but raster doesn't show up----
 #classification = leafmap.Map(
 #    zoom_control=True, 
 #    attribution_control=False,   
@@ -163,58 +165,52 @@ st.write("The random forest classification leads to this map as a final result:"
 #classification.to_streamlit()
 
 import os
+import streamlit as st
 import rasterio
 import numpy as np
-from PIL import Image
-import tempfile
-import folium
-from streamlit.components.v1 import html as st_html
-import streamlit as st
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap, BoundaryNorm
+from matplotlib.patches import Patch
 
+st.set_page_config(layout="wide")
+st.title("Forest classification — simple static plot")
+
+# Path to your GeoTIFF
 tif_path = os.path.join(os.getcwd(), "Data", "Forest_classification.tif")
 
-# Read raster and compute bounds/center
+if not os.path.exists(tif_path):
+    st.error(f"GeoTIFF not found: {tif_path}")
+    st.stop()
+
+# Read first band
 with rasterio.open(tif_path) as src:
     band = src.read(1)
-    left, bottom, right, top = src.bounds.left, src.bounds.bottom, src.bounds.right, src.bounds.top
-    center_lat = (top + bottom) / 2.0
-    center_lon = (left + right) / 2.0
 
-# Color mapping (0 -> transparent)
-cmap = {
-    0: (0, 0, 0, 0),
-    1: (0, 100, 0, 255),
-    2: (144, 238, 144, 255)
-}
+# Define colors for classes: 0 = transparent, 1 = dark green, 2 = light green
+colors = [
+    (0, 0, 0, 0.0),                # class 0 -> transparent
+    (0 / 255.0, 100 / 255.0, 0 / 255.0, 1.0),   # class 1 -> dark green
+    (144 / 255.0, 238 / 255.0, 144 / 255.0, 1.0) # class 2 -> light green
+]
 
-h, w = band.shape
-img = np.zeros((h, w, 4), dtype=np.uint8)
-for val, col in cmap.items():
-    img[band == val] = col
+cmap = ListedColormap(colors)
+# boundaries between class values: [-0.5, 0.5, 1.5, 2.5] maps values 0,1,2 to colors above
+norm = BoundaryNorm([-0.5, 0.5, 1.5, 2.5], ncolors=cmap.N)
 
-# Optionally downsample here if needed (to reduce PNG size)
-# e.g. resize to half: pil = Image.fromarray(img).resize((w//2, h//2), Image.Resampling.LANCZOS)
-pil = Image.fromarray(img)
+# Plot
+fig, ax = plt.subplots(figsize=(8, 6))
+ax.imshow(band, cmap=cmap, norm=norm, origin="upper")
+ax.set_title("Forest classification (static)")
+ax.axis("off")
 
-# Save PNG to a temp file (folium expects a path or URL)
-tmp = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
-pil.save(tmp.name, optimize=True)
+# Legend
+legend_items = [
+    Patch(facecolor=colors[1][:3], edgecolor="k", label="Coniferous forest (1)"),
+    Patch(facecolor=colors[2][:3], edgecolor="k", label="Broadleaf forest (2)"),
+]
+ax.legend(handles=legend_items, loc="lower left")
 
-# Build folium map and add the PNG overlay
-m = folium.Map(location=[center_lat, center_lon], zoom_start=11, tiles="OpenStreetMap")
-folium.raster_layers.ImageOverlay(
-    image=tmp.name,
-    bounds=[[bottom, left], [top, right]],
-    name="Forest overlay",
-    opacity=0.8,
-    interactive=True,
-    cross_origin=False
-).add_to(m)
-folium.LayerControl().add_to(m)
-
-# Render in Streamlit
-st.success("Showing classification as a folium ImageOverlay (fallback to avoid pydeck JSON error).")
-st_html(m._repr_html_(), height=600)
+st.pyplot(fig)
 
 st.space(size="small")
 
@@ -223,6 +219,7 @@ st.page_link(
     "pages/5_Total_carbon_stored.py",
     label="-> Carbon prediction"
 )
+
 
 
 
