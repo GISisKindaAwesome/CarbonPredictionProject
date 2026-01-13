@@ -187,8 +187,8 @@ colors = [
 cmap = ListedColormap(colors)
 
 fig, ax = plt.subplots(figsize=(8, 6))
-ax.imshow(band, cmap=cmap, vmin=0, vmax=2, origin="upper")
 gdf.plot(ax=ax, facecolor='lightgrey', edgecolor="black", linewidth=1)
+ax.imshow(band, cmap=cmap, vmin=0, vmax=2, origin="upper")
 
 ax.axis("off")
 legend_items = [
@@ -206,6 +206,7 @@ st.page_link(
     "pages/5_Total_carbon_stored.py",
     label="-> Carbon prediction"
 )
+
 
 
 
