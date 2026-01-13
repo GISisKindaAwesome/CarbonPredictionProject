@@ -6,7 +6,7 @@ st.write("To be able to calculate the amount of carbon stored in the trees vario
 st.space(size="small")
 st.header("Formula's")
 st.write("""
-        The measurments that were taken where the circumference at breast height in meters which where converted earlier to diameter at breast height in centimeters and the height in meters. These two variable are needed to be able to estimate the amount of carbon stored in the trees in kg. For these various formula's were used based on the following research:
+        The measurements that were taken were the circumference at breast height in meters which were converted earlier to diameter at breast height in centimeters and the height in meters. These two variables are needed to be able to estimate the amount of carbon stored in the trees in kg. For these various formula's were used based on the following research:
         - For most of the formulas except the above ground biomass this website was used: 
             - https://www.ecomatcher.com/how-to-calculate-co2-sequestration/
         - For the above ground biomass this reasearch paper was used. The Chave's formula was mainly made for tropical forests, but can also be used for mediterranean forests:
@@ -78,4 +78,5 @@ st.subheader("Click below to view the Sentinel 2 imagery forest classification")
 st.page_link(
     "pages/4_Classification.py",
     label="-> Classification"
+
 )
