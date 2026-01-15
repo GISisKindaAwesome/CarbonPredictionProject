@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 st.title("Statistics")
-st.write("To be able to run accurate tree statistics first circumference in meters need to be converted to diameter at breast height in cm. This can be done by dividing the circumference by π times 100 to convert it to cm.")
+st.write("To be able to run accurate tree statistics,  the circumference in meters first needed to be converted to the diameter at breast height in centimeters. This was  done by dividing the circumference by π and multiplying this by 100 to convert it into centimeters.")
 
 
 st.header("Summary statistics")
@@ -54,10 +54,10 @@ with col2:
 
 st.header("Statistical analysis")
 st.write("""
-         For the statistical analysis of the tree measurments it was decided to first check if the data was normally distributed using the Shapiro-Wilk test. After a Levene's test was ran to see if the variances differ. Based on these outcomes follow up test were performed to compare the groups. These are:
-         - If the Shapiro-Wilk test is ***significant*** and the Levene's tes* is ***equal*** a ***T-test*** is used
+        For the statistical analysis of the tree measurements the Shapiro-Wilk test was applied first to check if the data was normally distributed. A Levene's test was then applied, in order to see if the variances differed. Based on these outcomes, a follow up test was performed to compare the groups. These are:
+         - If the Shapiro-Wilk test is ***significant*** and the Levene's test is ***equal*** a ***T-test*** is used
          - If the Shapiro-Wilk test is ***significant*** and the Levene's test is ***unequal*** a ***Welch's T-test*** is used
-         - If the Shapiro-Wilk trest is ***not significant*** a ***Mann-Whitney U test*** is used
+         - If the Shapiro-Wilk test is ***not significant*** a ***Mann-Whitney U test*** is used
          - For the T-test the Cohen's d can be calculated and for the Mann-Whitney test the rank-biserial correlation can be calculated to determine the effect size (How big is the difference)
          """)
 
@@ -76,7 +76,7 @@ st.write("""
          """)
 st.write("""
          - Since the data is not normally distributed and variances are unequal a Mann-Whitney U test was used and the Rank-biserial correlation was calculated:
-            - The dbh of the forest types are seperated and there is a significant difference between them (U=13757, p=3.007*10^38)
+            - The dbh of the forest types are separated and there is a significant difference between them (U=13757, p=3.007*10^38)
             - There is a very large effect size thus a strong difference in how the dbh of the forest types differ with coniferous forests having thicker trees(r=-0.979)
          """)
 
@@ -94,7 +94,7 @@ st.write("""
          """)
 st.write("""
          - Since the data is not normally distributed and variances are unequal a Mann-Whitney U test was used and the Rank-biserial correlation was calculated:
-            - The height of the forest types are seperated and there is a significant difference between them (U=13185, p=2.123*10^32)
+            - The height of the forest types are separated and there is a significant difference between them (U=13185, p=2.123*10^32)
             - There is a very large effect size thus a strong difference in how the height of the forest types differ with coniferous forests having higher trees (r=-0.896)
          """)
 
@@ -106,4 +106,5 @@ st.subheader("Click below to view carbon calculations")
 st.page_link(
     "pages/3_Carbon_calculations.py",
     label="-> Carbon calculations"
+
 )
