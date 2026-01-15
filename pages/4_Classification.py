@@ -217,7 +217,7 @@ legend_items = [
 ]
 legend = ax.legend(
     handles=legend_items,
-    loc="lower left",
+    loc="lower right",
     title="Legend",
     fontsize=9,           
     frameon=True,
@@ -248,6 +248,7 @@ st.page_link(
     "pages/5_Total_carbon_stored.py",
     label="-> Carbon prediction"
 )
+
 
 
 
