@@ -9,6 +9,8 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap, BoundaryNorm
 from matplotlib.patches import Patch
+from matplotlib_map_utils.core.north_arrow import NorthArrow, north_arrow
+from matplotlib_map_utils.core.scale_bar import ScaleBar, scale_bar
 
 st.title("Classification")
 st.write("To be able to predict the amount of Carbon stored on the forests of Samos a forest classification map is needed. This can then be used for area calculation and other calculations. Copernicus provides a classification map called Corine Land Cover which could have been used. However, this map would have been less precise, as it  shows more general world coverage and originates  from 2018. No other classification maps/data exists for the island of Samos, so  for a more recent and a more accurate classification it was decided to make a new forest classification map based on Sentinel 2 imagery. Although various classification models do exist,a random forest algorithm was chosen instead, because it has high dimensionality and can thus  process the high amount of bands while  reducing noise bias. It can also capture complex boundaries better, which is particularly useful  for the forests on Samos.")
@@ -228,8 +230,7 @@ legend = ax.legend(
     labelspacing=0.3
 )
 
-from matplotlib_map_utils.core.north_arrow import NorthArrow, north_arrow
-from matplotlib_map_utils.core.scale_bar import ScaleBar, scale_bar
+
 NorthArrow.set_size("small")
 ScaleBar.set_size("small")
 north_arrow(
@@ -237,7 +238,7 @@ north_arrow(
     location="upper left",
     rotation={"crs": "EPSG:4326", "reference": "center"}
 )
-scale_bar(ax, location="lower left", style="boxes", bar={"projection": "EPSG:4326"})
+scale_bar(ax, location="lower left", style="boxes", bar={"projection": "EPSG:4326", "divisions": 5, "major_divisions": 5})
 
 st.pyplot(fig)
 
@@ -248,6 +249,7 @@ st.page_link(
     "pages/5_Total_carbon_stored.py",
     label="-> Carbon prediction"
 )
+
 
 
 
