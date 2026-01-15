@@ -228,16 +228,45 @@ legend = ax.legend(
     labelspacing=0.3
 )
 
-ax.annotate(
-    "N",
-    xy=(0.07, 0.90),
-    xytext=(0.07, 0.80),
-    arrowprops=dict(facecolor="black", width=4, headwidth=12),
-    ha="center", va="center",
-    fontsize=12,
-    xycoords=ax.transAxes,
-    zorder=5
-)
+from matplotlib.patches import Polygon
+
+def add_north_arrow(ax, location=(0.08, 0.90), size=0.05):
+    """
+    Adds a cartographic north arrow to the axes.
+    location: (x, y) in axis fraction coordinates
+    size: arrow size relative to axes
+    """
+    x, y = location
+    w = size / 2
+    h = size
+
+    arrow = Polygon(
+        [
+            (x, y),
+            (x - w, y - h),
+            (x, y - h * 0.75),
+            (x + w, y - h)
+        ],
+        closed=True,
+        facecolor="black",
+        edgecolor="black",
+        transform=ax.transAxes,
+        zorder=6
+    )
+
+    ax.add_patch(arrow)
+
+    ax.text(
+        x, y + size * 0.15,
+        "N",
+        transform=ax.transAxes,
+        ha="center",
+        va="bottom",
+        fontsize=11,
+        fontweight="bold",
+        zorder=6
+    )
+add_north_arrow(ax)
 
 st.pyplot(fig)
 
@@ -248,6 +277,7 @@ st.page_link(
     "pages/5_Total_carbon_stored.py",
     label="-> Carbon prediction"
 )
+
 
 
 
