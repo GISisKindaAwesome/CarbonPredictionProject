@@ -238,7 +238,7 @@ north_arrow(
     location="upper left",
     rotation={"crs": "EPSG:4326", "reference": "center"}
 )
-scale_bar(ax, location="lower left", style="boxes", bar={"projection": "EPSG:4326", "length": None, "divisions": 5, "major_divisions": 5})
+scale_bar(ax, location="lower left", style="boxes", bar={"projection": "EPSG:4326"})
 
 st.pyplot(fig)
 
@@ -249,6 +249,7 @@ st.page_link(
     "pages/5_Total_carbon_stored.py",
     label="-> Carbon prediction"
 )
+
 
 
 
