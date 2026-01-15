@@ -4,15 +4,15 @@ import pandas as pd
 
 st.title("Field measurements")
 
-st.write("To gather data on the forests of Samos some field measurements were needed. Close to the base where Archipelagos is located a valley can be found called Nightingale valley. The field measurements where conducted in this valley for both forest types, coniferous and broadleaf forest.")
+st.write("To gather data on the forests of Samos, some field measurements were needed. I selected the Nightingale Valley as the location of data selection, as this valley was closely located to the Archipelagos research base while also containing both broadleaf and coniferous forests. ")
 
 
 st.header("Methodology")
-st.write("To conduct the measurements a specific methodology was used.")
-st.write("For each forest type 6 plots were measured where the height in meters and the circumference in meters got gathered per tree. For the circumference measuring tape was used and to calculate the height the GLOBE observer app was used. For the height the app could give some skewed results, if that was the case an estamiation was made based on previous height measurements. The two forest types had their own plot sizes and minimum measurement heights. These are as following:")
-st.write("- For coniferous forest a plot size of 20x20 meters was used where trees needed to have a minimum circumference at breast height of 31 cm to be able to be measured.")
-st.write("- For broadleaf forest a plot size of 10x10 meters was used where the trees needed to have a minimum circumference at breast height of 31 cm to be able to be measured.")
-st.write("A different plot size was chosen for broadleaf forest due to the density of theses forests being higher and being time restricted.")
+st.write("The following methodology was used to measure the trees:")
+st.write("For each forest type six plots were selected within these plots, the height and the circumference  for each tree was measured in meters. The height was calculated by using the GLOBE observer app, while the circumference got measured using a measuring tape. For the height of the trees, the app could give some skewed results, if this was the case an estimation was made instead, based on previous height measurements. The two forest types had their own plot sizes and minimum measurement heights:")
+st.write("- For coniferous forest a plot size of 20x20 meters was used where trees needed to have a minimum circumference at breast height of 31 cm to be measured.")
+st.write("- For broadleaf forest a plot size of 10x10 meters was used where the trees needed to have a minimum circumference at breast height of 31 cm to be measured.")
+st.write("Due to time restrictions and higher density in broadleaf forests, a different plot size was chosen.")
 
 st.header("Nightingale valley and the plots")
 
@@ -74,3 +74,4 @@ st.page_link(
     label="-> Project statistics"
 
 )
+
